@@ -1,7 +1,7 @@
 <template>
   <Layout>
     <div class="container">
-      <Hero />
+      <Hero :settings="$page.settings.edges[0].node"/>
       <ProjectsGrid :projects="$page.projects.edges" />
     </div>
     <LatestJournals :journals="$page.journals.edges" />
@@ -10,19 +10,35 @@
 
 <page-query>
 query Posts {
-	projects: allProjectPost {
+	projects: allStrapiPost {
     edges {
       node {
         id
-        date (format: "YYYY")
         title
-        categories
-        thumbnail (quality: 90)
+        categories {
+					id
+					title
+				}
+        thumbnail {
+					url
+				}
         path
       }
     }
   },
-  journals: allJournalPost (perPage: 4) {
+	settings: allStrapiHero {
+		edges{
+			node {
+				footer
+				site_name
+				site_description
+				hero_subtitle
+				hero_title
+				dark_mode
+			}
+		}
+	},
+  journals: allStrapiJournalPost (perPage: 4) {
     edges {
       node {
         id

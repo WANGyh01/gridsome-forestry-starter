@@ -11,11 +11,11 @@
             <div class="categories-container">
               <div class="categories">
                 <span class="label">Categories</span>
-                <span 
+                <span
                   class="category"
-                  v-for="(category, index) in $page.post.categories" 
+                  v-for="(category, index) in $page.post.categories"
                   :key="index"
-                  v-text="category"
+                  v-text="category.title"
                 />
               </div>
             </div>
@@ -27,7 +27,7 @@
           </div>
         </div>
 
-        <div v-html="$page.post.content" class="content" />
+        <div v-html="mdToHtml($page.post.content)" class="content" />
 
       </div>
 
@@ -36,29 +36,41 @@
 </template>
 
 <page-query>
-query ProjectPost ($path: String!) {
-  post: projectPost (path: $path) {
+query ($path: String!) {
+  post: strapiPost (path: $path) {
     title
     date (format: "YYYY")
     content
-    categories
-    project_bg_color
-    project_fg_color
+    categories {
+			id
+			title
+		}
+		project_bg_color
+		project_fg_color
+
   }
 }
 </page-query>
 
 <script>
-export default {
-  metaInfo () {
-    return {
-      title: this.$page.post.title,
-      bodyAttrs: {
-        style: `background-color: ${this.$page.post.project_bg_color ? this.$page.post.project_bg_color : 'var(--color-base)'}; color: ${this.$page.post.project_fg_color ? this.$page.post.project_fg_color : 'var(--color-contrast)'}`
-      }
-    }
-  }
-}
+	import MarkdownIt from 'markdown-it'
+	const md = new MarkdownIt()
+
+	export default {
+		metaInfo () {
+			return {
+				title: this.$page.post.title,
+				bodyAttrs: {
+				  style: `background-color: ${this.$page.post.project_bg_color ? this.$page.post.project_bg_color : 'var(--color-base)'}; color: ${this.$page.post.project_fg_color ? this.$page.post.project_fg_color : 'var(--color-contrast)'}`
+				}
+			}
+		},
+		methods: {
+			mdToHtml (markdown) {
+				return md.render(markdown)
+			}
+		}
+	}
 </script>
 
 <style scoped>

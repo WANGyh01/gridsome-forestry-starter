@@ -7,11 +7,12 @@
 
 <script>
 export default {
-  data() {
-    return {
-      settings: require("../../data/theme.json")
-    }
-  }
+	props: {
+		settings: {
+			type: Object
+		}
+	}
+
 }
 </script>
 
